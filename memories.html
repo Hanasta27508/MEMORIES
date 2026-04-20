@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Memories 🖤</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0708;
+      --surface: #130f10;
+      --card: #1a1316;
+      --gold: #c9a96e;
+      --rose: #c2677a;
+      --rose-dim: #7a3a47;
+      --cream: #e8ddd0;
+      --muted: #6b5a5f;
+      --glow: rgba(194, 103, 122, 0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999; opacity: .5;
+    }
+
+    /* ── Floating petals ── */
+    .petals { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+    .petal {
+      position: absolute; top: -20px;
+      width: 8px; height: 12px;
+      background: radial-gradient(ellipse, var(--rose) 0%, transparent 70%);
+      border-radius: 50% 0 50% 0;
+      opacity: 0;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0%   { transform: translateY(-20px) rotate(0deg);   opacity: .6; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      position: relative;
+      padding: 2rem;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(194,103,122,.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(201,169,110,.07) 0%, transparent 60%);
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(.7rem, 1.5vw, .85rem);
+      letter-spacing: .35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fadeUp .8s .2s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 10vw, 7rem);
+      font-weight: 400;
+      line-height: 1.05;
+      color: var(--cream);
+      margin-bottom: .5rem;
+      opacity: 0;
+      animation: fadeUp .9s .4s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--rose);
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      font-style: italic;
+      color: var(--muted);
+      margin-top: 1rem;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp .9s .6s forwards;
+    }
+
+    .hero-divider {
+      width: 120px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto 2.5rem;
+      opacity: 0;
+      animation: fadeUp .8s .8s forwards;
+    }
+
+    .scroll-hint {
+      position: absolute; bottom: 2.5rem;
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      font-size: .75rem; letter-spacing: .2em; color: var(--muted);
+      text-transform: uppercase;
+      opacity: 0; animation: fadeUp .8s 1.2s forwards;
+    }
+    .scroll-hint::after {
+      content: '';
+      width: 1px; height: 40px;
+      background: linear-gradient(var(--rose-dim), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse { 0%,100%{opacity:.3} 50%{opacity:1} }
+
+    /* ── Quote Banner ── */
+    .quote-banner {
+      padding: 5rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .quote-banner::before {
+      content: '\201C';
+      position: absolute; top: -1rem; left: 50%; transform: translateX(-50%);
+      font-family: 'Playfair Display', serif;
+      font-size: 12rem; color: var(--rose-dim); opacity: .15;
+      line-height: 1; pointer-events: none;
+    }
+    .quote-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-style: italic;
+      color: var(--cream);
+      max-width: 700px; margin: 0 auto 1.2rem;
+      line-height: 1.5;
+    }
+    .quote-author {
+      font-size: .9rem; letter-spacing: .25em;
+      color: var(--gold); text-transform: uppercase;
+    }
+
+    /* ── Gallery ── */
+    .section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: .75rem; letter-spacing: .4em;
+      color: var(--gold); text-transform: uppercase;
+      margin-bottom: .6rem; text-align: center;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      text-align: center; margin-bottom: 3rem;
+      color: var(--cream);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .photo-card {
+      position: relative; overflow: hidden;
+      border-radius: 4px;
+      background: var(--card);
+      border: 1px solid rgba(201,169,110,.1);
+      cursor: pointer;
+      transition: transform .4s ease, box-shadow .4s ease;
+    }
+    .photo-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 20px 60px rgba(194,103,122,.2);
+    }
+    .photo-card.tall { grid-row: span 2; }
+
+    .photo-placeholder {
+      width: 100%; aspect-ratio: 4/3;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: .5rem;
+      background: linear-gradient(135deg, var(--surface) 0%, var(--card) 100%);
+      color: var(--muted);
+      position: relative; overflow: hidden;
+    }
+    .photo-card.tall .photo-placeholder { aspect-ratio: 4/5; }
+
+    .photo-placeholder::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(194,103,122,.06) 0%, transparent 70%);
+    }
+
+    .photo-icon { font-size: 2.5rem; opacity: .4; }
+    .photo-hint { font-size: .75rem; letter-spacing: .1em; opacity: .4; text-align: center; padding: 0 1rem; }
+
+    /* actual <img> support */
+    .photo-card img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+
+    .photo-caption {
+      padding: .9rem 1.1rem;
+      border-top: 1px solid rgba(201,169,110,.08);
+    }
+    .photo-caption .date {
+      font-size: .7rem; letter-spacing: .2em;
+      color: var(--gold); text-transform: uppercase; margin-bottom: .25rem;
+    }
+    .photo-caption .desc {
+      font-style: italic; color: var(--cream); font-size: .95rem;
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.92);
+      align-items: center; justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-inner { max-width: 90vw; max-height: 90vh; position: relative; }
+    .lightbox-inner img { max-width: 90vw; max-height: 75vh; object-fit: contain; border-radius: 4px; }
+    .lightbox-close {
+      position: absolute; top: -2.5rem; right: 0;
+      background: none; border: none; color: var(--cream);
+      font-size: 1.5rem; cursor: pointer; opacity: .7;
+    }
+    .lightbox-close:hover { opacity: 1; }
+    .lightbox-caption {
+      text-align: center; padding: 1rem 0;
+      font-style: italic; color: var(--muted);
+    }
+
+    /* ── Upload area ── */
+    .upload-section {
+      max-width: 600px; margin: 0 auto 5rem;
+      padding: 0 2rem; text-align: center;
+    }
+    .upload-box {
+      border: 1.5px dashed var(--rose-dim);
+      border-radius: 8px; padding: 3rem 2rem;
+      cursor: pointer;
+      transition: border-color .3s, background .3s;
+      background: rgba(194,103,122,.03);
+    }
+    .upload-box:hover {
+      border-color: var(--rose);
+      background: rgba(194,103,122,.07);
+    }
+    .upload-icon { font-size: 2.5rem; margin-bottom: .8rem; }
+    .upload-text { color: var(--muted); font-style: italic; font-size: 1rem; }
+    .upload-text span { color: var(--rose); }
+    #fileInput { display: none; }
+
+    /* ── Quotes carousel ── */
+    .quotes-section {
+      padding: 5rem 2rem;
+      background: linear-gradient(180deg, var(--bg) 0%, var(--surface) 50%, var(--bg) 100%);
+      text-align: center;
+    }
+    .quotes-wrapper { max-width: 700px; margin: 0 auto; position: relative; min-height: 120px; }
+    .quote-slide {
+      position: absolute; inset: 0;
+      opacity: 0; transition: opacity .8s ease;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+    }
+    .quote-slide.active { opacity: 1; }
+    .quote-slide p {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      font-style: italic; color: var(--cream); line-height: 1.6;
+    }
+    .quote-slide cite {
+      font-size: .8rem; letter-spacing: .25em;
+      color: var(--gold); text-transform: uppercase;
+    }
+    .quote-dots { display: flex; gap: .5rem; justify-content: center; margin-top: 2.5rem; }
+    .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--muted); cursor: pointer; transition: background .3s;
+    }
+    .dot.active { background: var(--rose); }
+
+    /* ── Footer ── */
+    footer {
+      padding: 4rem 2rem;
+      text-align: center;
+      border-top: 1px solid rgba(201,169,110,.08);
+    }
+    footer .heart {
+      font-size: 1.5rem; color: var(--rose);
+      animation: heartbeat 1.4s ease-in-out infinite;
+    }
+    @keyframes heartbeat {
+      0%,100%{transform:scale(1)} 14%{transform:scale(1.25)} 28%{transform:scale(1)} 42%{transform:scale(1.15)} 56%{transform:scale(1)}
+    }
+    footer p { color: var(--muted); font-style: italic; margin-top: .8rem; font-size: .9rem; }
+
+    /* ── Music player ── */
+    .music-player {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 500;
+      background: var(--card); border: 1px solid rgba(201,169,110,.15);
+      border-radius: 50px; padding: .6rem 1.2rem;
+      display: flex; align-items: center; gap: .8rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 30px rgba(0,0,0,.4);
+      transition: width .3s;
+    }
+    .music-btn {
+      background: none; border: none;
+      color: var(--rose); font-size: 1.2rem; cursor: pointer;
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .music-info { font-size: .75rem; color: var(--muted); font-style: italic; white-space: nowrap; }
+    .music-bars { display: flex; align-items: flex-end; gap: 2px; height: 16px; }
+    .bar {
+      width: 3px; background: var(--rose); border-radius: 2px;
+      animation: bars .8s ease-in-out infinite alternate;
+    }
+    .bar:nth-child(2){animation-delay:.15s}
+    .bar:nth-child(3){animation-delay:.3s}
+    .bar:nth-child(4){animation-delay:.1s}
+    .bar.paused { animation-play-state: paused; }
+    @keyframes bars {
+      from{height:4px} to{height:14px}
+    }
+
+    /* ── Anims ── */
+    @keyframes fadeUp {
+      from{opacity:0;transform:translateY(24px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+<!-- Floating petals -->
+<div class="petals" id="petals"></div>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <p class="hero-eyebrow">♡ a love story</p>
+  <h1 class="hero-title">
+    Our
+    <em>Memories</em>
+  </h1>
+  <p class="hero-sub">setiap momen bersamamu adalah halaman favoritku</p>
+  <div class="hero-divider"></div>
+  <div class="scroll-hint">scroll</div>
+</section>
+
+<!-- ══════════ QUOTE BANNER ══════════ -->
+<div class="quote-banner reveal">
+  <p class="quote-text">"Kamu adalah alasan aku percaya pada hal-hal indah yang tidak sengaja terjadi."</p>
+  <p class="quote-author">— for you, always</p>
+</div>
+
+<!-- ══════════ GALLERY ══════════ -->
+<section class="section">
+  <p class="section-label reveal">our moments</p>
+  <h2 class="section-title reveal">Kenangan Kita</h2>
+
+  <div class="gallery-grid" id="galleryGrid">
+    <!-- Default placeholder cards -->
+<div class="photo-card reveal" onclick="openLightbox(this)">
+  <img src="https://i.ibb.co.com/0zgrdGk/foto1.jpg" alt="kenangan"/>
+  <div class="photo-caption">
+    <div class="date">12 Februari 2024
+    <div class="desc">Momen pertama kita 🖤</div>
+  </div>
+</div>
+      </div>
+      <div class="photo-caption">
+        <div class="date">13 oktober 2026🤍</div>
+        <div class="desc">Momen pertama kita 🖤</div>
+      </div>
+    </div>
+
+<div class="photo-card tall reveal" onclick="openLightbox(this)">
+  <img src="https://i.ibb.co.com/vCNDyTWM/foto2.jpg" alt="kenangan"/>
+  <div class="photo-caption">
+    <div class="date">Malam Spesial🤍</div>
+    <div class="desc">Di bawah bintang bersamamu 🌙</div>
+  </div>
+</div>
+
+<div class="photo-card reveal" onclick="openLightbox(this)">
+  <img src="https://i.ibb.co.com/0yg780Hs/foto3.jpg" alt="kenangan"/>
+  <div class="photo-caption">
+    <div class="date">Sore Bersamamu🤍</div>
+    <div class="desc">Setiap detik terasa berharga 🍂</div>
+  </div>
+</div>
+
+<div class="photo-card reveal" onclick="openLightbox(this)">
+  <img src="https://i.ibb.co.com/0jrbP7Z3/foto4.jpg" alt="kenangan"/>
+  <div class="photo-caption">
+    <div class="date">Petualangan Kita🤍</div>
+    <div class="desc">Jalan-jalan favorit bersamamu ✨</div>
+  </div>
+</div>
+
+    <div class="photo-card reveal" onclick="openLightbox(this)">
+   <img src="https://i.ibb.co.com/zHj6VwF2/foto5.jpg" alt="kenangan"/>
+      <div class="photo-caption">
+        <div class="date">Hari Istimewa🤍</div>
+        <div class="desc">Kebersamaan yang selalu kurindukan🌹</div>
+      </div>
+    </div>
+
+    <div class="photo-card reveal" onclick="openLightbox(this)">
+    <img src="https://i.ibb.co.com/vvw0v4vN/foto6.jpg" alt="kenangan"/>
+      <div class="photo-caption">
+        <div class="date">Kenangan Manis🤍</div>
+        <div class="desc">Selalu ada tawa di antara kita💐</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ UPLOAD ══════════ -->
+
+<!-- ══════════ QUOTES CAROUSEL ══════════ -->
+<div class="quotes-section">
+  <p class="section-label" style="margin-bottom:2rem">words for you</p>
+  <div class="quotes-wrapper" id="quotesWrapper">
+    <div class="quote-slide active">
+      <p>"Cintamu seperti suar di lautan gelap — selalu tahu cara membawaku pulang."</p>
+      <cite>— forever yours</cite>
+    </div>
+    <div class="quote-slide">
+      <p>"Ada dua hal yang bisa kusebut rumah: tempat itu, dan dirimu."</p>
+      <cite>— with you always</cite>
+    </div>
+    <div class="quote-slide">
+      <p>"Semoga kita bersama trus sampe selama nya."</p>
+      <cite>— my every choice</cite>
+    </div>
+    <div class="quote-slide">
+      <p>"Kamu tidak butuh kata sempurna untuk menjelaskan betapa berartinya dirimu."</p>
+      <cite>— in silence too</cite>
+    </div>
+    <div class="quote-slide">
+      <p>"Setiap foto yang kita ambil adalah bukti bahwa kebahagiaan itu nyata."</p>
+      <cite>— us, always</cite>
+    </div>
+  </div>
+  <div class="quote-dots" id="quoteDots"></div>
+</div>
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <div class="heart">♥</div>
+  <p>dibuat dengan cinta, untuk cinta 🖤</p>
+  <p style="font-size:.75rem;margin-top:.4rem;opacity:.4">Hanasta & Mutiara & 14 10 2026~</p>
+</footer>
+
+<!-- ══════════ LIGHTBOX ══════════ -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightboxImg" src="" alt=""/>
+    <p class="lightbox-caption" id="lightboxCaption"></p>
+  </div>
+</div>
+
+<audio id="myAudio" src="lagu_kita.mp3" loop></audio>
+
+<div class="music-player" id="musicPlayer">
+    </div>
+
+<div class="music-player" id="musicPlayer">
+  <button class="music-btn" id="musicBtn" onclick="toggleMusic()">▶</button>
+  <div class="music-info">Our Song 🎵</div>
+  <div class="music-bars" id="musicBars">
+    <div class="bar paused"></div>
+    <div class="bar paused"></div>
+    <div class="bar paused"></div>
+    <div class="bar paused"></div>
+  </div>
+</div>
+
+<script>
+/* ── Petals ── */
+(function spawnPetals(){
+  const c = document.getElementById('petals');
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div');
+    p.className='petal';
+    p.style.left=Math.random()*100+'vw';
+    p.style.animationDuration=(8+Math.random()*12)+'s';
+    p.style.animationDelay=(-Math.random()*20)+'s';
+    p.style.width=(5+Math.random()*6)+'px';
+    p.style.height=(8+Math.random()*8)+'px';
+    p.style.opacity=Math.random()*.5+.1;
+    c.appendChild(p);
+  }
+})();
+
+/* ── Scroll reveal ── */
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+/* ── Upload photos ── */
+function addPhotos(e){
+  const files=[...e.target.files];
+  const grid=document.getElementById('galleryGrid');
+  files.forEach((file,i)=>{
+    const url=URL.createObjectURL(file);
+    const card=document.createElement('div');
+    card.className='photo-card reveal'+(i%5===0?' tall':'');
+    card.onclick=()=>openLightboxDirect(url,'Kenangan baru 🖤');
+    card.innerHTML=`
+      <img src="${url}" alt="kenangan"/>
+      <div class="photo-caption">
+        <div class="date">Baru ditambahkan 💕</div>
+        <div class="desc">Kenangan indah bersama</div>
+      </div>`;
+    grid.appendChild(card);
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{ card.classList.add('visible'); });
+    });
+  });
+  e.target.value='';
+}
+
+/* ── Lightbox ── */
+function openLightbox(card){
+  const img=card.querySelector('img');
+  if(!img){ return; }
+  const caption=card.querySelector('.desc')?.textContent||'';
+  document.getElementById('lightboxImg').src=img.src;
+  document.getElementById('lightboxCaption').textContent=caption;
+  document.getElementById('lightbox').classList.add('open');
+}
+function openLightboxDirect(src,cap){
+  document.getElementById('lightboxImg').src=src;
+  document.getElementById('lightboxCaption').textContent=cap;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(e){
+  if(!e||e.target===document.getElementById('lightbox')||e.target.classList.contains('lightbox-close')){
+    document.getElementById('lightbox').classList.remove('open');
+  }
+}
+
+/* ── Quotes carousel ── */
+let qIdx=0;
+const slides=document.querySelectorAll('.quote-slide');
+const dotsContainer=document.getElementById('quoteDots');
+slides.forEach((_,i)=>{
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  d.onclick=()=>goQuote(i);
+  dotsContainer.appendChild(d);
+});
+function goQuote(n){
+  slides[qIdx].classList.remove('active');
+  dotsContainer.children[qIdx].classList.remove('active');
+  qIdx=n;
+  slides[qIdx].classList.add('active');
+  dotsContainer.children[qIdx].classList.add('active');
+}
+setInterval(()=>goQuote((qIdx+1)%slides.length),4500);
+
+/* ── Music player toggle (visual) ── */
+let playing=false;
+const song =
+document.getElementByld('myAudio');
+function toggleMusic(){ playing = !playing;  document.getElementById('musicBtn').textContent=playing?'⏸':'▶';
+  document.querySelectorAll('.bar').forEach(b=>{
+    b.classList.toggle('paused',!playing);
+  });
+}
+</script>
+</body>
+</html>
